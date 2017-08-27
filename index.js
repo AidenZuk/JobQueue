@@ -146,12 +146,18 @@ function JobQueue(options){
     this.state = STATE.IDLE;
     this.consumer = options.consumer;
     this.paused = false;
-    this.timeout = options.timeout || 0;
+    this.interval = options.interval || 0;
+    this.timeout = options.timeout || 100;
+    this.timehandle = null;
     let self = this;
     this.run = function(){
 
         if(this.paused){
-            setTimeout(function(){
+            if(this.timehandle){
+                clearTimeout(this.timehandle);
+                this.timehandle = null;
+            }
+            this.timehandle = setTimeout(function(){
                 self.state = STATE.IDLE;
                 self.run();
             },this.timeout);
@@ -170,10 +176,15 @@ function JobQueue(options){
                             if(target.uuid){
                                 self.emit('resp-'+target.uuid,value)
                             }
-                            setTimeout(function(){
+                            if(self.timehandle){
+                                clearTimeout(self.timehandle);
+                                self.timehandle = null;
+                            }
+
+                            self.timehandle =setTimeout(function(){
                                 self.state = STATE.IDLE;
                                 self.run();
-                            },self.timeout)
+                            },self.interval)
 
 
                         }).catch(function(e){
@@ -183,7 +194,11 @@ function JobQueue(options){
                             //    console.error('error in writing Value:',e); // 这个不应该出现,只有在非正常的情况下才会如此
 
                             if(self.targetValue.length > 0){
-                                setTimeout(function(){
+                                if(self.timehandle){
+                                    clearTimeout(self.timehandle);
+                                    self.timehandle = null;
+                                }
+                                self.timehandle =setTimeout(function(){
                                     self.state = STATE.IDLE;
                                     self.run();
                                 },self.timeout)

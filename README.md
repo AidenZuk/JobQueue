@@ -1,9 +1,10 @@
 # JobQueue
 utils for long time jobs
 ##JobQueue A simple job queue to process data one by one.
-    let queue = new JobQueue({consumer:xxx,interval:xxx});
+    let queue = new JobQueue({consumer:xxx,interval:xxx,timeout});
 consumer is a process function with protocol as: function(data){...}, comsumer must return a promise;
-interval is the time between two jobs execution.
+interval is the delay time before two action,default is 0ms
+time is the delay time if job execution failed. default is 100ms
 
 ### how to work
 ask consumer to process data:
@@ -38,8 +39,9 @@ next_data should be processed in 1000ms, including the process time of somedata;
  
     
 consumer是一个处理函数，其函数原型为function(data){ return Promise;},一定返回一个promise
-interval 是两次处理之间的时间间隔
-    
+interval 是两次处理之间的时间间隔，默认为0ms    
+timeout 是某次数据失败后，处理下一次数据的恢复时间，默认为100ms
+
 需要队列处理数据的时候:
 
     queue.push(somedata);
