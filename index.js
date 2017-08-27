@@ -145,6 +145,7 @@ function JobQueue(options){
     this.targetValue = [];
     this.state = STATE.IDLE;
     this.consumer = options.consumer;
+    this.paused = false;
     let self = this;
     this.run = function(){
 
