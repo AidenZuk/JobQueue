@@ -43,6 +43,9 @@ consumer是一个处理函数，其函数原型为function(data){ return Promise
      
 队列会在somedata处理完毕后，自动处理next_data
 
+    queue.pause  暂停处理数据
+    queue.resume 恢复处理数据
+
 
 #WriteQueue simple queue for update specified state
 Some state, such as light state in smarthome, if multiple command is sent in a short time, it would be nonsense to switch the light multi-times.
