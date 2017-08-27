@@ -146,6 +146,7 @@ function JobQueue(options){
     this.state = STATE.IDLE;
     this.consumer = options.consumer;
     this.paused = false;
+    this.timeout = options.timeout || 0;
     let self = this;
     this.run = function(){
 
@@ -153,37 +154,47 @@ function JobQueue(options){
             setTimeout(function(){
                 self.state = STATE.IDLE;
                 self.run();
-            },100);
+            },this.timeout);
         }else{
             if (self.targetValue && self.targetValue.length > 0) {
-                let target = self.targetValue.shift();
-                if (self.consumer) {
-                    self.state = STATE.BUSY;
+                if(self.state === STATE.IDLE){
+                    let target = self.targetValue.shift();
+                    if (self.consumer ) {
+                        self.state = STATE.BUSY;
 
-                    self.__worker= Q().then(function(){
-                        //队列中的所有的待写入操作返回
-                        return self.consumer(target.handle);
-                    }).then(function(value){
-                        if(target.uuid){
-                            self.emit('resp-'+target.uuid,value)
-                        }
-                    }).catch(function(e){
-                        if(target.uuid){
-                            self.emit('resp-'+target.uuid,e);
-                        }
-                        //    console.error('error in writing Value:',e); // 这个不应该出现,只有在非正常的情况下才会如此
+                        self.__worker= Q().then(function(){
+                            //队列中的所有的待写入操作返回
 
-                        if(self.targetValue.length > 0){
+                            return self.consumer(target.handle);
+                        }).then(function(value){
+                            if(target.uuid){
+                                self.emit('resp-'+target.uuid,value)
+                            }
                             setTimeout(function(){
                                 self.state = STATE.IDLE;
                                 self.run();
-                            },100)
+                            },self.timeout)
 
-                        }else{
-                            self.state = STATE.IDLE;
-                        }
-                    });
+
+                        }).catch(function(e){
+                            if(target.uuid){
+                                self.emit('resp-'+target.uuid,e);
+                            }
+                            //    console.error('error in writing Value:',e); // 这个不应该出现,只有在非正常的情况下才会如此
+
+                            if(self.targetValue.length > 0){
+                                setTimeout(function(){
+                                    self.state = STATE.IDLE;
+                                    self.run();
+                                },self.timeout)
+
+                            }else{
+                                self.state = STATE.IDLE;
+                            }
+                        });
+                    }
                 }
+
             }else{
                 self.state = STATE.IDLE;
             }

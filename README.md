@@ -1,8 +1,9 @@
 # JobQueue
 utils for long time jobs
 ##JobQueue A simple job queue to process data one by one.
-    let queue = new JobQueue({consumer:xxx});
+    let queue = new JobQueue({consumer:xxx,interval:xxx});
 consumer is a process function with protocol as: function(data){...}, comsumer must return a promise;
+interval is the time between two jobs execution.
 
 ### how to work
 ask consumer to process data:
@@ -28,13 +29,16 @@ The promise will reject 'timeout' exception when somedata not have been processe
     queue.push(somedata,500);
     return queue.push(next_data,1000);
 next_data should be processed in 1000ms, including the process time of somedata;
-
+    queue.pause  pause proceed after current one finished.
+    queue.resume resume to start proceed data
     
 ##JobQueue 一个简单的任务队列，实现逐个处理数据的功能
 
+    let queue = new JobQueue({consumer:xxx,interval:xxx});
+ 
     
 consumer是一个处理函数，其函数原型为function(data){ return Promise;},一定返回一个promise
-
+interval 是两次处理之间的时间间隔
     
 需要队列处理数据的时候:
 
@@ -47,7 +51,9 @@ consumer是一个处理函数，其函数原型为function(data){ return Promise
     queue.resume 恢复处理数据
 
 
-#WriteQueue simple queue for update specified state
+#WriteQueue simple queue for update specified state  
+# !!not tested!!
+
 Some state, such as light state in smarthome, if multiple command is sent in a short time, it would be nonsense to switch the light multi-times.
  Let's think about such command sequence:
  
