@@ -67,7 +67,7 @@ describe('JOB Queue Test', function(){
         it('process test different timeout ', function(done){
             function consumer(data) {
                 return Q().delay(200).then(()=>{
-                    console.log('timeout:',new Date().getTime());
+                   // console.log('timeout:',new Date().getTime());
                     data.value++;
                 })
             }
@@ -95,7 +95,7 @@ describe('JOB Queue Test', function(){
         it('process test pause/resume ', function(done){
             function consumer2(data) {
                 return Q().delay(200).then(()=>{
-                    console.log(new Date().getTime());
+                   // console.log(new Date().getTime());
                     data.value++;
                 })
             }

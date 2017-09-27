@@ -1,0 +1,19 @@
+{
+  "name": "qz-jobqueue",
+  "version": "1.0.4",
+  "description": "queue utils for long time jobs",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/plotozhu/JobQueue.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/plotozhu/JobQueue/issues"
+  },
+  "homepage": "https://github.com/plotozhu/JobQueue#readme"
+}

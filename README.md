@@ -86,5 +86,6 @@ In this case, next_data will be ignored, and if next_data2 is same as somedata, 
     {
         success: true/false,  exection state  
         reason: xxx           when failed, this is the reason
+        result:   if success, this is the return value
     }
     

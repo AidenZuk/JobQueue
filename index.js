@@ -174,7 +174,7 @@ function JobQueue(options){
                             return self.consumer(target.handle);
                         }).then(function(value){
                             if(target.uuid){
-                                self.emit('resp-'+target.uuid,value)
+                                self.emit('resp-'+target.uuid,{success:true,result:value})
                             }
                             if(self.timehandle){
                                 clearTimeout(self.timehandle);
@@ -189,7 +189,7 @@ function JobQueue(options){
 
                         }).catch(function(e){
                             if(target.uuid){
-                                self.emit('resp-'+target.uuid,e);
+                                self.emit('resp-'+target.uuid,{success:false,reason:e});
                             }
                             //    console.error('error in writing Value:',e); // 这个不应该出现,只有在非正常的情况下才会如此
 
